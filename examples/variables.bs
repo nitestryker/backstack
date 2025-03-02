@@ -1,0 +1,23 @@
+
+# Variable example program
+# This program demonstrates how to use variables in Felix
+
+10        # Push 10 onto the stack
+set:x     # Store in variable x
+
+20        # Push 20 onto the stack
+set:y     # Store in variable y
+
+get:x     # Push value of x onto stack
+get:y     # Push value of y onto stack
++         # Add x and y
+dump      # Print result (should be 30)
+
+# Increment x
+get:x     # Get current value of x
+1         # Push 1
++         # Add 1 to x
+set:x     # Store back to x
+
+get:x     # Get value of x (should now be 11)
+dump      # Print it

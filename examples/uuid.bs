@@ -1,0 +1,215 @@
+# Felix UUID Generator Example
+
+# Function to generate a UUID-like string
+# Format: xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx (where x is hex digit, y is 8,9,a,b)
+fun:uuid
+  # We'll use a simple RNG based on LCG (Linear Congruential Generator)
+  # Initialize with current "timestamp" simulation
+  # Use parameters similar to the ones in random.felix
+
+  # Get seed from a counter that changes each call
+  get:uuid_counter
+  1
+  +
+  dup  # Keep a copy for calculation
+  set:uuid_counter
+
+  # LCG parameters
+  1103515245  # multiplier
+  set:a
+  12345       # increment
+  set:c
+  2147483648  # modulus (2^31)
+  set:m
+
+  # Initialize result string
+  ""
+  set:result
+
+  # Generate 32 hex digits with hyphens in the right places
+  0
+  set:i
+
+  # Loop to generate all characters
+  while
+    # Generate a random number using LCG
+    get:uuid_counter
+    get:a
+    *
+    get:c
+    +
+    get:m
+    %
+    dup  # Keep a copy for use
+    set:uuid_counter
+
+    # Get last 4 bits for a hex digit (0-15)
+    15
+    &
+
+    # Convert to hex character
+    dup
+    10
+    <
+    if
+      # 0-9: add '0' (48 in ASCII)
+      48
+      +
+      str
+    else
+      # a-f: subtract 10 then add 'a' (97 in ASCII)
+      10
+      -
+      97
+      +
+      str
+    endif
+
+    # Special handling for variant bits in position 19 (index 18)
+    get:i
+    18 
+    ==
+    if
+      drop
+      # Use 8,9,a,b for the variant
+      get:uuid_counter
+      3   # Get values 0-3
+      &
+      8   # Add 8 to get 8-11 (8,9,a,b)
+      +
+
+      # Convert to hex
+      dup
+      10
+      <
+      if
+        # 0-9: add '0'
+        48
+        +
+        str
+      else
+        # a-f: subtract 10 then add 'a'
+        10
+        -
+        97
+        +
+        str
+      endif
+    endif
+
+    # Special handling for version bits in position 14 (index 13 is the end of the field)
+    get:i
+    13
+    ==
+    if
+      # Always use '4' for version
+      drop
+      "4"
+    endif
+
+    # Append to result - Explicit string conversion for all operands
+    get:result
+    swap
+    str  
+    str_concat
+    set:result
+
+    # Add hyphens at positions 8, 13, 18, 23
+    get:i
+    dup
+    7
+    ==
+    over
+    12
+    ==
+    over
+    17
+    ==
+    over
+    22
+    ==
+    # Convert to 0/1 values for OR operations
+    # Handle potential string values on stack
+    rot
+    drop
+    # Use logical OR operations 
+    |
+    |
+    |
+    if
+      # Add hyphen
+      get:result
+      "-"
+      str_concat
+      set:result
+    endif
+
+    # Increment counter
+    get:i
+    1
+    +
+    dup
+    set:i
+
+    # Check if we're done (32 digits + 4 hyphens = 36 characters)
+    36
+    <
+  repeat
+
+  # Return the UUID string
+  get:result
+  return
+fun_end
+
+# Initialize UUID counter if not already set
+0
+set:uuid_counter
+
+# Example usage
+"Testing UUID generation"
+dump
+
+# Generate and print multiple UUIDs to show they're different
+call:uuid
+"UUID 1: "
+swap
+str_concat
+dump
+
+call:uuid
+"UUID 2: "
+swap
+str_concat
+dump
+
+call:uuid
+"UUID 3: "
+swap
+str_concat
+dump
+
+# Verify we can call it in a loop
+5
+set:i
+
+"Generating UUIDs in a loop:"
+dump
+
+while
+  call:uuid
+  "UUID: "
+  swap
+  str_concat
+  dump
+
+  # Decrement counter
+  get:i
+  1
+  -
+  dup
+  set:i
+
+  # Continue if counter > 0
+  0
+  >
+repeat

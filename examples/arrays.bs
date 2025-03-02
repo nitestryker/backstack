@@ -1,0 +1,45 @@
+
+# Array example program
+# This program demonstrates how to use arrays in Felix
+
+5           # Push array size
+array_new   # Create a new array of size 5
+set:arr     # Store array ID in variable arr
+
+# Set values in the array
+get:arr     # Get array ID
+0           # Index 0
+10          # Value 10
+array_set   # arr[0] = 10
+
+get:arr     # Get array ID
+1           # Index 1
+20          # Value 20
+array_set   # arr[1] = 20
+
+get:arr     # Get array ID
+2           # Index 2
+30          # Value 30
+array_set   # arr[2] = 30
+
+# Sum the first three elements
+get:arr     # Get array ID
+0           # Index 0
+array_get   # Get arr[0]
+
+get:arr     # Get array ID
+1           # Index 1
+array_get   # Get arr[1]
++           # Add arr[0] + arr[1]
+
+get:arr     # Get array ID
+2           # Index 2
+array_get   # Get arr[2]
++           # Add (arr[0] + arr[1]) + arr[2]
+
+dump        # Print result (should be 60)
+
+# Get the length of the array
+get:arr     # Get array ID
+array_len   # Get length
+dump        # Print length (should be 5)

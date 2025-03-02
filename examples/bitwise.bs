@@ -1,0 +1,99 @@
+
+# Felix Bitwise Operations Example
+
+# Bitwise AND (&): 12 & 7 = 4 
+#  12 = 1100 (binary)
+#   7 = 0111 (binary)
+#   4 = 0100 (binary result)
+12       # First number
+7        # Second number
+&        # Bitwise AND
+"Bitwise AND (12 & 7) = "
+swap
+str      # Convert to string
+str_concat
+dump
+
+# Bitwise OR (|): 12 | 7 = 15
+#  12 = 1100 (binary)
+#   7 = 0111 (binary)
+#  15 = 1111 (binary result)
+12       # First number
+7        # Second number
+|        # Bitwise OR
+"Bitwise OR (12 | 7) = "
+swap
+str      # Convert to string
+str_concat
+dump
+
+# Bitwise XOR (^): 12 ^ 7 = 11
+#  12 = 1100 (binary)
+#   7 = 0111 (binary)
+#  11 = 1011 (binary result)
+12       # First number
+7        # Second number
+^        # Bitwise XOR
+"Bitwise XOR (12 ^ 7) = "
+swap
+str      # Convert to string
+str_concat
+dump
+
+# Bitwise NOT (~): ~5 = -6
+#   5 = 00000101 (binary, 8-bit shown for clarity)
+#  -6 = 11111010 (binary result, 2's complement)
+5        # Number
+~        # Bitwise NOT
+"Bitwise NOT (~5) = "
+swap
+str      # Convert to string
+str_concat
+dump
+
+# Bitwise Shift Left (<<): 5 << 2 = 20
+#   5 = 0101 (binary)
+#  20 = 10100 (binary result, shifted left by 2 positions)
+5        # Number
+2        # Shift amount
+<<       # Shift left
+"Bitwise Shift Left (5 << 2) = "
+swap
+str      # Convert to string
+str_concat
+dump
+
+# Bitwise Shift Right (>>): 20 >> 2 = 5
+#  20 = 10100 (binary)
+#   5 = 00101 (binary result, shifted right by 2 positions)
+20       # Number
+2        # Shift amount
+>>       # Shift right
+"Bitwise Shift Right (20 >> 2) = "
+swap
+str      # Convert to string
+str_concat
+dump
+
+# Combining operations: (15 & 23) ^ (7 | 9) = 8
+#  15 = 01111 (binary)
+#  23 = 10111 (binary)
+#  15 & 23 = 00111 (7 in decimal)
+#
+#   7 = 0111 (binary)
+#   9 = 1001 (binary)
+#   7 | 9 = 1111 (15 in decimal)
+#
+#   7 ^ 15 = 01000 (8 in decimal)
+15       # First number for AND
+23       # Second number for AND
+&        # Bitwise AND
+7        # First number for OR
+9        # Second number for OR
+|        # Bitwise OR
+^        # Bitwise XOR of results
+"Combined ((15 & 23) ^ (7 | 9)) = "
+swap
+str      # Convert to string
+str_concat
+dump

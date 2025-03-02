@@ -1,0 +1,49 @@
+
+# Combined test of variables and arrays
+
+# Variable operations
+10        # Push 10 onto the stack
+set:x     # Store in variable x
+
+# Array operations
+3           # Push array size
+array_new   # Create a new array of size 3
+set:arr     # Store array ID in variable arr
+
+# Use variable value to set array elements
+get:x       # Get value of x (10)
+get:arr     # Get array ID
+0           # Index 0
+get:x       # Value to store (10)
+array_set   # arr[0] = 10
+
+get:arr     # Get array ID
+1           # Index 1
+get:x       # Value to store (10)
+2           # Push 2
+*           # Multiply x by 2 (20)
+array_set   # arr[1] = 20
+
+get:arr     # Get array ID
+2           # Index 2
+get:x       # Value to store (10)
+3           # Push 3
+*           # Multiply x by 3 (30)
+array_set   # arr[2] = 30
+
+# Sum the array elements
+get:arr     # Get array ID
+0           # Index 0
+array_get   # Get arr[0] (10)
+
+get:arr     # Get array ID
+1           # Index 1
+array_get   # Get arr[1] (20)
++           # Add arr[0] + arr[1] (30)
+
+get:arr     # Get array ID
+2           # Index 2
+array_get   # Get arr[2] (30)
++           # Add (arr[0] + arr[1]) + arr[2] (60)
+
+dump        # Print result (should be 60)

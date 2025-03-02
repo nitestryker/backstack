@@ -1,0 +1,63 @@
+
+# Felix Random Number Generation Example
+
+# Since Felix doesn't have built-in random functions,
+# we'll implement a simple Linear Congruential Generator (LCG)
+
+# Set up initial seed (can be any number)
+1234
+set:seed
+
+# LCG parameters (common values)
+1103515245  # multiplier
+set:a
+12345      # increment
+set:c
+2147483648 # modulus (2^31)
+set:m
+
+# Function to generate a random number
+fun:random
+  # Algorithm: seed = (a * seed + c) % m
+  get:seed    # Get current seed
+  get:a       # Get multiplier
+  *           # Multiply seed by a
+  get:c       # Get increment
+  +           # Add c
+  get:m       # Get modulus
+  %           # Take modulo m
+  dup         # Duplicate result (one to return, one to save as new seed)
+  set:seed    # Save as new seed
+  return      # Return random number
+fun_end
+
+# Generate and display 5 random numbers
+"Random numbers generated:"
+dump
+
+5         # Loop counter
+set:i   # Store counter in variable i
+
+# Loop to generate 5 random numbers
+while
+  call:random       # Generate random number
+  100               # Maximum value (exclusive)
+  %                 # Take modulo to get number between 0 and 99
+  dup               # Duplicate for printing
+  "Random number: " # String prefix
+  swap              # Swap to get number on top
+  str               # Convert to string
+  str_concat        # Concatenate strings
+  dump              # Print result
+  
+  # Decrement counter
+  get:i           # Get counter
+  1                 # Amount to decrement
+  -                 # Subtract
+  dup               # Duplicate result
+  set:i           # Save counter back to variable
+  
+  # Check if counter > 0
+  0                 # Value to compare with
+  >                 # Check if counter > 0
+repeat              # Repeat if true

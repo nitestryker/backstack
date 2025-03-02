@@ -1,0 +1,90 @@
+
+# Felix Let Example
+# Demonstrates using let-like variable binding functionality
+
+# Let example using Felix's existing set/get operations
+# Format: value variable_name set
+10 
+"x" 
+set:x
+
+# Use the variable
+get:x
+"Value of x: "
+swap
+str
+str_concat
+dump
+
+# Let with a nested scope
+20
+"y"
+set:y
+
+# Show the current value of y
+get:y
+"Value of y outside: " 
+swap
+str
+str_concat
+dump
+
+# Create a new scope with local y
+30
+"y"
+set:y
+
+# Show the locally modified y
+get:y
+"Value of y inside local scope: "
+swap
+str
+str_concat
+dump
+
+# Example of a function that implements let-like scoping
+fun:with_let
+  # Store the original variable value if it exists
+  "temp_var"
+  set:temp_var
+  
+  # Set new value in this scope
+  swap
+  "temp_var"
+  set:temp_var
+  
+  # Use the variable
+  get:temp_var
+  "Inside with_let: "
+  swap
+  str
+  str_concat
+  dump
+  
+  # Return to original scope
+  get:temp_var
+  return
+fun_end
+
+# Try the with_let function
+50
+call:with_let
+"Result from with_let: "
+swap
+str
+str_concat
+dump
+
+# More complex example - let binding with calculation
+5       # Value to bind
+dup     # Duplicate for calculation
+10 +    # Add 10
+"result"
+set:result  # Bind to name 'result'
+
+get:result
+"result = "
+swap
+str
+str_concat
+dump

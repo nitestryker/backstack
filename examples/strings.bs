@@ -1,0 +1,43 @@
+
+# Felix String Operations Example
+
+# String literal
+"Hello, "    # Push first string to stack
+"world!"     # Push second string to stack
+str_concat   # Concatenate strings
+dump         # Print result: "Hello, world!"
+
+# String length
+"Felix language"  # Push string to stack
+str_length        # Get string length
+dump              # Print result: 14
+
+# String slice (substring)
+"Hello, world!"   # Push string to stack
+7                 # Push start index
+12                # Push end index
+str_slice         # Get substring from index 7 to 12
+dump              # Print result: "world"
+
+# String contains
+"Hello, world!"   # Push haystack string
+"world"           # Push needle string
+str_contains      # Check if second string is in first string
+dump              # Print result: 1 (true)
+
+# Combining string operations
+"The "       # First part
+"Felix "     # Second part
+str_concat   # Concatenate
+"language"   # Third part
+str_concat   # Concatenate again
+dump         # Print result: "The Felix language"
+
+# Variable with strings
+"String in variable"  # Push string
+set:my_string         # Store in variable
+
+get:my_string       # Retrieve string
+" - appended text"  # String to append
+str_concat          # Concatenate
+dump                # Print combined string

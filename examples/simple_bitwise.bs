@@ -1,0 +1,31 @@
+
+# Simple Felix Bitwise Operations Example
+
+# Bitwise AND (&): 12 & 7 = 4
+12       # First number
+7        # Second number
+&        # Bitwise AND
+"Bitwise AND (12 & 7) = "
+swap
+str      # Convert to string
+str_concat
+dump
+
+# Bitwise OR (|): 12 | 7 = 15
+12       # First number
+7        # Second number
+|        # Bitwise OR
+"Bitwise OR (12 | 7) = "
+swap
+str      # Convert to string
+str_concat
+dump
+
+# Bitwise NOT (~): ~5 = -6
+5        # Number
+~        # Bitwise NOT
+"Bitwise NOT (~5) = "
+swap
+str      # Convert to string
+str_concat
+dump

@@ -1,0 +1,375 @@
+
+# Felix Random Module
+# A Python-like random module implementation for Felix
+
+# Initialize seed with a default value
+1234
+set:seed
+
+# LCG parameters (common values)
+1103515245  # multiplier
+set:a
+12345      # increment
+set:c
+2147483648 # modulus (2^31)
+set:m
+
+# -- Random module functions --
+
+# Function: random()
+# Returns a random float between 0.0 and 1.0
+fun:random
+  # Generate a random integer using LCG
+  get:seed
+  get:a
+  *
+  get:c
+  +
+  get:m
+  %
+  dup
+  set:seed
+  
+  # Convert to float between 0.0 and 1.0
+  get:m
+  /
+  return
+fun_end
+
+# Function: randint(a, b)
+# Returns a random integer between a and b (inclusive)
+fun:randint
+  # Expects: a b (top of stack has b, next has a)
+  
+  # Calculate range size (b - a + 1)
+  over   # Get a copy of a
+  -      # b - a
+  1
+  +      # Add 1 to make inclusive
+  
+  # Generate random number and scale to range
+  call:random   # Get random float 0.0-1.0
+  *             # Multiply by range size
+  
+  # Add minimum value to shift range
+  swap
+  +
+  
+  # Convert to integer by flooring
+  dup
+  str
+  "."
+  str_split  # Split on decimal point
+  0
+  array_get  # Get integer part
+  
+  # Convert back to integer
+  str
+  input_int
+  
+  return
+fun_end
+
+# Function: randrange(start, stop, step)
+# Returns a random element from range(start, stop, step)
+fun:randrange
+  # Expects: start stop step
+
+  # Calculate number of items in range
+  over    # get start
+  -       # stop - start
+  over    # get step
+  /       # (stop - start) / step
+  
+  # Get random index in range
+  call:random
+  *
+  
+  # Add to start and multiply by step
+  swap    # Get step
+  *       # random_index * step
+  swap    # Get start
+  +       # start + (random_index * step)
+  
+  # Floor to integer
+  dup
+  str
+  "."
+  str_split
+  0
+  array_get
+  str
+  input_int
+  
+  return
+fun_end
+
+# Function: choice(array_id)
+# Returns a random element from an array
+fun:choice
+  # Expects: array_id
+  
+  # Get array length
+  dup
+  array_len
+  
+  # Generate random index
+  call:random
+  *
+  
+  # Convert to integer
+  dup
+  str
+  "."
+  str_split
+  0
+  array_get
+  str
+  input_int
+  
+  # Get element at random index
+  swap
+  array_get
+  
+  return
+fun_end
+
+# Function: shuffle(array_id)
+# Shuffles elements in an array in place (Fisher-Yates algorithm)
+fun:shuffle
+  # Expects: array_id
+  
+  # Get array length
+  dup
+  array_len
+  1
+  -
+  set:i
+  
+  # Shuffle algorithm
+  while
+    # Generate random index from 0 to i
+    get:i
+    1
+    +
+    call:random
+    *
+    
+    # Convert to integer
+    dup
+    str
+    "."
+    str_split
+    0
+    array_get
+    str
+    input_int
+    set:j
+    
+    # Swap elements at i and j
+    over         # Get array_id
+    get:i        # Get i
+    over         # Get array_id
+    get:i        # Get i
+    array_get    # Get array[i]
+    
+    over         # Get array_id
+    get:j        # Get j
+    over         # Get array_id
+    get:j        # Get j
+    array_get    # Get array[j]
+    
+    # Place array[j] at position i
+    rot          # Get array_id to top
+    get:i        # Get i
+    rot          # Get array[j] to top
+    array_set    # array[i] = array[j]
+    
+    # Place temp (old array[i]) at position j
+    over         # Get array_id
+    get:j        # Get j
+    rot          # Get array[i] (temp) to top
+    array_set    # array[j] = temp
+    
+    # Decrement i
+    get:i
+    1
+    -
+    dup
+    set:i
+    
+    # Continue if i > 0
+    0
+    >
+  repeat
+  
+  # Return the array_id
+  return
+fun_end
+
+# Function: seed(new_seed)
+# Sets the random seed
+fun:set_seed
+  # Expects: new_seed
+  set:seed
+  return
+fun_end
+
+# --- Example usage ---
+"Random Module Example"
+dump
+
+# Test random() - float between 0 and 1
+call:random
+str                # Convert float to string
+"random(): "
+swap
+str_concat
+dump
+
+# Test randint(1, 10) - random integer between 1 and 10
+1
+10
+call:randint
+str                # Convert integer to string
+"randint(1, 10): "
+swap
+str_concat
+dump
+
+# Test randrange(0, 100, 5) - random number from 0, 5, 10, ..., 95
+0
+100
+5
+call:randrange
+str                # Convert number to string
+"randrange(0, 100, 5): "
+swap
+str_concat
+dump
+
+# Test array functions
+# Create an array with values 1 through 5
+5
+array_new
+dup
+0
+1
+array_set
+dup
+1
+2
+array_set
+dup
+2
+3
+array_set
+dup
+3
+4
+array_set
+dup
+4
+5
+array_set
+
+# Test choice - select a random element
+dup
+call:choice
+str                # Convert chosen element to string
+"choice([1,2,3,4,5]): "
+swap
+str_concat
+dump
+
+# Test shuffle - shuffle the array in place
+dup
+call:shuffle
+set:shuffled_array
+
+# Print shuffled array
+"Shuffled array: ["
+0
+set:i
+
+while
+  get:i
+  5
+  <
+if
+  # Print element
+  get:shuffled_array
+  get:i
+  array_get
+  str
+  
+  # Add comma if not last element
+  get:i
+  4
+  <
+  if
+    ", "
+    str_concat
+  endif
+  
+  # Append to result string
+  swap
+  str_concat
+  
+  # Increment counter
+  get:i
+  1
+  +
+  set:i
+else
+  # End the loop
+  0
+  set:i
+endif
+
+  # Check loop condition
+  get:i
+  5
+  <
+repeat
+
+# Print final result
+"]"
+str_concat
+dump
+
+# Test setting a custom seed and verify we get same sequence
+42
+call:set_seed
+"After setting seed to 42:"
+dump
+
+call:random
+"First random(): "
+swap
+str_concat
+dump
+
+call:random
+"Second random(): "
+swap
+str_concat
+dump
+
+# Reset seed to same value and verify
+42
+call:set_seed
+"After resetting seed to 42 again:"
+dump
+
+call:random
+"First random() again: "
+swap
+str_concat
+dump
+
+call:random
+"Second random() again: "
+swap
+str_concat
+dump

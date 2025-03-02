@@ -1,0 +1,454 @@
+
+# Felix Built-in Functions Example
+
+# Function to calculate the square of a number
+fun:square
+  dup    # Duplicate the input 
+  *      # Multiply it by itself
+  return
+fun_end
+
+# Function to check if a number is prime
+fun:is_prime
+  # Stack has: n
+  dup  # Duplicate n
+  2    # Minimum prime number
+  <    # Check if n < 2
+  if   # If n < 2
+    drop  # Drop n
+    0     # Return false (0)
+    return
+  else
+    dup  # Duplicate n
+    2    # Check if n equals 2
+    ==
+    if   # If n == 2
+      drop  # Drop n
+      1     # Return true (1)
+      return
+    else
+      # Loop from 2 to sqrt(n) to check if n is divisible
+      dup   # Duplicate n
+      2     # Start divisor at 2
+      swap  # Stack: divisor n
+      set:n # Save n as variable
+      
+      # While loop to check all possible divisors
+      while
+        # Check if n is divisible by current divisor
+        dup       # Duplicate divisor
+        get:n     # Get original n
+        over      # Duplicate divisor (stack: divisor n divisor)
+        %         # n % divisor
+        0         # Compare with 0
+        ==        # Check if remainder is 0
+        if        # If remainder is 0
+          drop    # Drop divisor
+          0       # Not prime
+          return  # Return result
+        endif
+        
+        # Increment divisor by 1
+        1        # Value to add
+        +        # divisor + 1
+        
+        # Continue if divisor^2 <= n
+        dup      # Duplicate divisor
+        dup      # Duplicate it again for squaring
+        *        # divisor^2
+        get:n    # Get original n
+        <=       # divisor^2 <= n?
+      repeat
+      
+      # If we get here, it's prime
+      drop     # Drop divisor
+      1        # Return true (1)
+      return
+    endif
+  endif
+fun_end
+
+# Function to calculate the greatest common divisor (GCD)
+fun:gcd
+  # Stack has: a b
+  # Algorithm: Euclidean algorithm
+  while
+    # Check if second number is 0
+    dup    # Duplicate b
+    0      # Compare with 0
+    ==     # b == 0?
+    if     # If b == 0
+      drop   # Drop b
+      return # Return a
+    endif
+    
+    # Calculate a % b
+    over   # Stack: b a
+    over   # Stack: b a b
+    %      # a % b
+    
+    # Swap so that new pair is b and a%b
+    swap   # Stack: a%b b
+  repeat
+fun_end
+
+# Function to calculate the least common multiple (LCM)
+fun:lcm
+  # Stack has: a b
+  # LCM(a,b) = (a*b)/gcd(a,b)
+  
+  # Save original values
+  over    # Stack: a b a
+  over    # Stack: a b a b
+  
+  # Calculate GCD
+  call:gcd  # Stack: a b gcd
+  
+  # Calculate a*b
+  rot     # Stack: b gcd a
+  rot     # Stack: gcd a b
+  *       # a*b
+  
+  # Divide by GCD
+  swap    # Stack: a*b gcd
+  /       # (a*b)/gcd
+  return
+fun_end
+
+# Function to calculate the factorial of a number
+fun:factorial
+  # Check if the value is 0 or 1
+  dup    # Duplicate the input (for checking)
+  1      # Value to compare with
+  <=     # Check if n <= 1
+  if     # If n <= 1
+    # Base case: return 1
+    drop  # Remove the duplicated value
+    1     # Push 1 as result
+    return
+  else
+    # Recursive case: n * factorial(n-1)
+    dup    # Duplicate n (one for multiplication, one for recursion)
+    1      # Value to subtract
+    -      # n - 1
+    call:factorial  # Recursive call to factorial(n-1)
+    *      # n * factorial(n-1)
+    return
+  endif
+fun_end
+
+# Function to calculate the nth Fibonacci number
+fun:fibonacci
+  # Check if n is 0 or 1
+  dup    # Duplicate the input
+  1      # Value to compare
+  <=     # Check if n <= 1
+  if     # If n <= 1
+    # Base case: return n
+    return
+  else
+    # Iterative implementation (more efficient than recursive)
+    # Variables: a=0, b=1, i=2
+    0      # Initial a
+    set:a
+    1      # Initial b
+    set:b
+    2      # Start i at 2
+    set:i
+    
+    # Loop until i > n
+    while
+      # Calculate next Fibonacci value
+      get:a  # Get a
+      get:b  # Get b
+      +      # a + b
+      dup    # Duplicate the result (next Fibonacci number)
+      set:a  # New a = old b
+      get:b  # Get old b
+      set:b  # New b = old a + old b
+      
+      # Increment i
+      get:i  # Get i
+      1      # Value to add
+      +      # i + 1
+      dup    # Duplicate for comparison
+      set:i  # Store new i
+      
+      # Compare i with n
+      over   # Get target n
+      <=     # i <= n?
+    repeat
+    
+    # Return the result
+    get:a  # Return a (contains the nth Fibonacci number)
+    swap   # Bring target n to top
+    drop   # Remove n
+    return
+  endif
+fun_end
+
+# Function to check if a string is a palindrome
+fun:is_palindrome
+  # Stack has: string
+  dup        # Duplicate string for length
+  str_length # Get string length
+  
+  # If length <= 1, it's a palindrome
+  dup
+  1
+  <=
+  if
+    drop     # Drop length
+    drop     # Drop string
+    1        # Return true (1)
+    return
+  endif
+  
+  # Initialize variables
+  0          # Start index
+  set:i
+  
+  dup        # Duplicate string length
+  1          # Subtract 1
+  -          # length - 1
+  set:j      # End index
+  
+  # Loop until i >= j
+  while
+    # Get characters at positions i and j
+    dup       # Duplicate string
+    get:i     # Get i
+    over      # Duplicate string
+    get:j     # Get j
+    
+    # Get character at position i
+    over      # String i j string
+    rot       # i j string string
+    rot       # j string string i
+    1         # Length to slice
+    +         # i+1 (end position)
+    over      # j string string i i+1
+    swap      # j string string i+1 i
+    str_slice # Character at position i
+    
+    # Get character at position j
+    rot       # string string i+1 j
+    1         # Length to slice
+    +         # j+1 (end position)
+    over      # string string i+1 j+1 j
+    swap      # string string i+1 j j+1
+    rot       # string i+1 j j+1 string
+    str_slice # Character at position j
+    
+    # Compare characters
+    ==        # Are characters equal?
+    if
+      # Characters match, update indexes
+      get:i
+      1
+      +       # i + 1
+      set:i
+      
+      get:j
+      1
+      -       # j - 1
+      set:j
+      
+      # Check if we've checked all characters
+      get:i
+      get:j
+      >=      # i >= j?
+      if
+        # We're done and all characters matched
+        drop  # Drop original string
+        1     # Return true (1)
+        return
+      endif
+    else
+      # Characters don't match
+      drop    # Drop original string
+      0       # Return false (0)
+      return
+    endif
+  repeat
+fun_end
+
+# Function to calculate absolute value
+fun:abs
+  dup    # Duplicate the number
+  0      # Zero for comparison
+  <      # Check if number < 0
+  if     # If number is negative
+    -1     # Multiply by -1
+    *
+  endif
+  return
+fun_end
+
+# Function to calculate power (x^y)
+fun:pow
+  # Stack has: x y (base exponent)
+  dup    # Duplicate exponent
+  0      # Compare with 0
+  ==     # y == 0?
+  if     # If exponent is 0
+    drop   # Drop exponent
+    drop   # Drop base
+    1      # Return 1
+    return
+  endif
+  
+  dup    # Duplicate exponent
+  1      # Compare with 1
+  ==     # y == 1?
+  if     # If exponent is 1
+    drop   # Drop exponent
+    return # Return base as is
+  endif
+  
+  # For general case, calculate power
+  swap   # Stack: y x
+  dup    # Stack: y x x
+  set:base  # Save base
+  1      # Initialize result
+  set:result
+  
+  # Loop exponent times
+  swap   # Stack: x y
+  0      # Initialize counter
+  set:i
+  
+  while
+    # Multiply result by base
+    get:result
+    get:base
+    *
+    set:result
+    
+    # Increment counter
+    get:i
+    1
+    +
+    dup
+    set:i
+    
+    # Check if we're done
+    over  # Get exponent
+    <     # counter < exponent?
+  repeat
+  
+  # Clean up and return
+  drop   # Drop exponent
+  get:result
+  return
+fun_end
+
+# Example usage of the built-in functions
+"=== Testing Square Function ==="
+dump
+5
+call:square
+"Square of 5 = "
+swap
+str
+str_concat
+dump
+
+"=== Testing Prime Checker ==="
+dump
+7
+call:is_prime
+"Is 7 prime? "
+swap
+str
+str_concat
+dump
+
+4
+call:is_prime
+"Is 4 prime? "
+swap
+str
+str_concat
+dump
+
+"=== Testing GCD Function ==="
+dump
+48
+18
+call:gcd
+"GCD of 48 and 18 = "
+swap
+str
+str_concat
+dump
+
+"=== Testing LCM Function ==="
+dump
+12
+15
+call:lcm
+"LCM of 12 and 15 = "
+swap
+str
+str_concat
+dump
+
+"=== Testing Factorial Function ==="
+dump
+6
+call:factorial
+"Factorial of 6 = "
+swap
+str
+str_concat
+dump
+
+"=== Testing Fibonacci Function ==="
+dump
+10
+call:fibonacci
+"Fibonacci(10) = "
+swap
+str
+str_concat
+dump
+
+"=== Testing Palindrome Checker ==="
+dump
+"racecar"
+call:is_palindrome
+"Is 'racecar' a palindrome? "
+swap
+str
+str_concat
+dump
+
+"hello"
+call:is_palindrome
+"Is 'hello' a palindrome? "
+swap
+str
+str_concat
+dump
+
+"=== Testing Absolute Value Function ==="
+dump
+-42
+call:abs
+"Absolute value of -42 = "
+swap
+str
+str_concat
+dump
+
+"=== Testing Power Function ==="
+dump
+2
+8
+call:pow
+"2^8 = "
+swap
+str
+str_concat
+dump

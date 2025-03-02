@@ -1,0 +1,85 @@
+# Felix Functions Example
+
+# Simple function that adds two numbers
+fun:add
+  # Function body - expects two values on the stack
+  # Returns their sum
+  +   # Add the two values
+  return
+fun_end
+
+# Example of using the add function
+5        # First number
+3        # Second number
+call:add # Call the add function (5 + 3)
+"Result of 5 + 3 = "
+swap
+str      # Convert to string
+str_concat
+dump
+
+# Recursive factorial function
+fun:factorial
+  # Check if the value is 0 or 1
+  dup    # Duplicate the input (for checking)
+  1      # Value to compare with
+  <=     # Check if n <= 1
+  if     # If n <= 1
+    # Base case: return 1
+    drop  # Remove the duplicated value
+    1     # Push 1 as result
+    return
+  else
+    # Recursive case: n * factorial(n-1)
+    dup    # Duplicate n (one for multiplication, one for recursion)
+    1      # Value to subtract
+    -      # n - 1
+    call:factorial  # Recursive call to factorial(n-1)
+    *      # n * factorial(n-1)
+    return
+  endif
+fun_end
+
+# Calculate factorial of 5
+5
+call:factorial
+"Factorial of 5 = "
+swap
+str      # Convert to string
+str_concat
+dump
+
+# Recursive Fibonacci function
+fun:fibonacci
+  # Check if n is 0 or 1
+  dup    # Duplicate the input
+  1      # Value to compare
+  <=     # Check if n <= 1
+  if     # If n <= 1
+    # Base case: return n
+    return
+  else
+    # Recursive case: fibonacci(n-1) + fibonacci(n-2)
+    dup    # Duplicate n
+    1      # Value to subtract
+    -      # n - 1
+    call:fibonacci  # fibonacci(n-1)
+    
+    swap   # Bring original n back to top
+    2      # Value to subtract
+    -      # n - 2
+    call:fibonacci  # fibonacci(n-2)
+    
+    +      # fibonacci(n-1) + fibonacci(n-2)
+    return
+  endif
+fun_end
+
+# Calculate fibonacci of 7
+7
+call:fibonacci
+"Fibonacci of 7 = "
+swap
+str      # Convert to string
+str_concat
+dump

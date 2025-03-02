@@ -1,0 +1,7 @@
+[project]
+name = "backstack"
+version = "0.1.0"
+description = ""
+authors = ["nitestrkyer <nitestryker@gmail.com>"]
+requires-python = ">=3.11"
+dependencies = []

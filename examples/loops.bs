@@ -1,0 +1,38 @@
+
+# Loop example program
+# This program demonstrates how to use loops in Felix
+
+# Simple WHILE/REPEAT loop that counts from 1 to 5
+1           # Push initial value
+set:counter # Store in counter variable
+
+while       # Start of while loop
+  get:counter   # Get counter value
+  dup           # Duplicate for comparison and printing
+  dump          # Print current counter value
+  
+  1             # Push 1 to increment counter
+  +             # Add 1 to counter value
+  set:counter   # Update counter variable
+  
+  get:counter   # Get counter value for comparison
+  5             # Push limit value
+  >             # Compare: counter > 5?
+repeat      # End of loop, jumps back to while if condition is false
+
+# FOR/NEXT loop that calculates sum of numbers 1 to 10
+0           # Initial sum value
+set:sum     # Store in sum variable
+
+10          # End value
+1           # Start value
+for         # Start FOR loop, value on stack is the current counter
+  dup           # Duplicate counter for use
+  get:sum       # Get current sum
+  +             # Add counter to sum
+  set:sum       # Store new sum
+next        # Increment counter and loop if not done
+
+# Final result
+get:sum     # Get the sum
+dump        # Print the result (should be 55)

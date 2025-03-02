@@ -1,0 +1,107 @@
+
+# Random 8-digit Number Generator in Felix
+
+# Initialize seed with the current timestamp (simplified)
+1234567
+set:seed
+
+# LCG parameters (common values)
+1103515245  # multiplier
+set:a
+12345      # increment
+set:c
+2147483648 # modulus (2^31)
+set:m
+
+# Function: random()
+# Returns a random number using LCG algorithm
+fun:random
+  # Generate a random integer using LCG
+  get:seed
+  get:a
+  *
+  get:c
+  +
+  get:m
+  %
+  dup
+  set:seed
+  
+  return
+fun_end
+
+# Function: random_digit()
+# Returns a random digit (0-9)
+fun:random_digit
+  call:random  # Get random number
+  10           # Modulo by 10
+  %            # to get a digit 0-9
+  return
+fun_end
+
+# Function: generate_8digit_number()
+# Generate an 8-digit number as a string
+fun:generate_8digit_number
+  ""           # Start with empty string
+  
+  # Generate 8 digits
+  8
+  set:count
+  
+  while
+    # Generate a digit and convert to string
+    call:random_digit
+    str
+    
+    # Append to our result string
+    swap
+    str_concat
+    
+    # Decrement counter
+    get:count
+    1
+    -
+    dup
+    set:count
+    
+    # Continue while count > 0
+    0
+    >
+  repeat
+  
+  return
+fun_end
+
+# Generate and display an 8-digit number
+"Generating an 8-digit number..."
+dump
+
+call:generate_8digit_number
+"Random 8-digit number: "
+swap
+str_concat
+dump
+
+# Generate multiple numbers
+"Generating 5 more 8-digit numbers:"
+dump
+
+5
+set:i
+
+while
+  call:generate_8digit_number
+  str
+  dump
+  
+  # Decrement counter
+  get:i
+  1
+  -
+  dup
+  set:i
+  
+  # Continue while i > 0
+  0
+  >
+repeat

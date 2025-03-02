@@ -1,0 +1,57 @@
+
+# Felix File I/O Examples
+
+# Example 1: Write to a file
+"test.txt"        # Filename 
+"w"               # Mode: write
+file_open         # Open file for writing
+set:file          # Store file handle
+
+get:file          # Get file handle
+"Hello, File I/O in Felix!\n"  # Content to write
+file_write        # Write to file
+
+get:file          # Get file handle
+file_close        # Close file
+
+# Example 2: Read from a file
+"test.txt"        # Filename
+"r"               # Mode: read
+file_open         # Open file for reading
+set:file          # Store file handle
+
+get:file          # Get file handle
+file_read         # Read file contents
+set:content       # Store content
+
+get:content       # Get content
+dump              # Print file content
+
+get:file          # Get file handle
+file_close        # Close file
+
+# Example 3: Append to a file
+"test.txt"        # Filename
+"a"               # Mode: append
+file_open         # Open file for appending
+set:file          # Store file handle
+
+get:file          # Get file handle
+"This text is appended!\n"  # Content to append
+file_write        # Append to file
+
+get:file          # Get file handle
+file_close        # Close file
+
+# Example 4: Read the file again to see both contents
+"test.txt"        # Filename
+"r"               # Mode: read
+file_open         # Open file for reading
+set:file          # Store file handle
+
+get:file          # Get file handle
+file_read         # Read file contents
+dump              # Print file content
+
+get:file          # Get file handle
+file_close        # Close file

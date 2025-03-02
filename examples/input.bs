@@ -1,0 +1,67 @@
+# Felix Input Examples
+
+# Example 1: Basic input for string
+"Enter your name: "  # Prompt
+input               # Read user input
+"Hello, "           # Greeting text
+str_concat          # Concatenate name with greeting
+dump                # Print the result
+
+# Example 2: Input with conversion to integer
+"Enter a number: "  # Prompt for a number
+input_int           # Read as integer
+dump                # Print the number
+
+# Example 3: Calculator
+"Enter first number: "  # Prompt for first number
+input_int              # Read as integer
+set:num1               # Store first number
+
+"Enter second number: " # Prompt for second number
+input_int              # Read as integer
+set:num2               # Store second number
+
+"Enter operation (+, -, *, /): " # Prompt for operation
+input                  # Read operation
+set:op                 # Store operation
+
+# Process based on operation
+get:op                 # Get operation
+"+"                    # Push addition symbol
+str_contains           # Check if operation is addition
+if                     # If operation is addition
+  get:num1             # Get first number
+  get:num2             # Get second number
+  +                    # Add numbers
+  dump                 # Print result
+endif
+
+get:op                 # Get operation
+"-"                    # Push subtraction symbol
+str_contains           # Check if operation is subtraction
+if                     # If operation is subtraction
+  get:num1             # Get first number
+  get:num2             # Get second number
+  -                    # Subtract numbers
+  dump                 # Print result
+endif
+
+get:op                 # Get operation
+"*"                    # Push multiplication symbol
+str_contains           # Check if operation is multiplication
+if                     # If operation is multiplication
+  get:num1             # Get first number
+  get:num2             # Get second number
+  *                    # Multiply numbers
+  dump                 # Print result
+endif
+
+get:op                 # Get operation
+"/"                    # Push division symbol
+str_contains           # Check if operation is division
+if                     # If operation is division
+  get:num1             # Get first number
+  get:num2             # Get second number
+  /                    # Divide numbers
+  dump                 # Print result
+endif

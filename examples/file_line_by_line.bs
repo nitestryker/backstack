@@ -1,0 +1,108 @@
+
+# Felix File Processing Line by Line
+
+# First, create a test file with multiple lines
+"multiline.txt"    # Filename 
+"w"                # Mode: write
+file_open          # Open file for writing
+set:file           # Store file handle
+
+get:file           # Get file handle
+"First line\nSecond line\nThird line\nFourth line\nFifth line"  # Content with multiple lines
+file_write         # Write to file
+
+get:file           # Get file handle
+file_close         # Close file
+
+# Now let's process the file line by line
+"Processing file line by line:\n"
+dump               # Print header
+
+"multiline.txt"    # Filename
+"r"                # Mode: read
+file_open          # Open file for reading
+set:file           # Store file handle
+
+get:file           # Get file handle
+file_read          # Read entire file content
+set:content        # Store content
+
+# Split content by newline character
+get:content        # Get content
+"\n"               # Newline character
+str_split          # Split string by newline
+set:lines          # Store array of lines
+
+# Get the number of lines
+get:lines          # Get lines array
+array_len          # Get array length
+set:line_count     # Store line count
+
+"Total lines: "    # Output prefix
+get:line_count     # Get line count
+str                # Convert number to string
+str_concat         # Concatenate
+dump               # Print total line count
+
+# Process each line
+0                  # Initialize line index
+set:i              # Store index
+
+# Loop through each line
+get:line_count     # Get line count
+get:i              # Get current index
+<                  # Check if index < line_count
+while              # While index < line_count
+  # Get the current line
+  get:lines        # Get lines array
+  get:i            # Get current index
+  array_get        # Get line at index
+  
+  # Process the line (in this example, just print with line number)
+  "Line "          # Line prefix
+  get:i            # Get current index
+  1                # Add 1 to make it 1-based index
+  +                # Add 1 to index
+  str               # Convert number to string
+  str_concat       # Concatenate
+  ": "             # Separator
+  str_concat       # Concatenate
+  swap             # Swap with line content
+  str_concat       # Concatenate line number and content
+  dump             # Print the result
+  
+  # Increment index
+  get:i            # Get current index
+  1                # Value to add
+  +                # Add 1 to index
+  set:i            # Update index
+repeat             # End while loop
+
+get:file           # Get file handle
+file_close         # Close file
+
+# Example 2: Counting words in a file
+"multiline.txt"    # Filename
+"r"                # Mode: read
+file_open          # Open file for reading
+set:file           # Get file handle
+
+get:file           # Get file handle
+file_read          # Read file contents
+set:content        # Store content
+
+get:file           # Get file handle
+file_close         # Close file
+
+# Split by spaces to count words
+get:content        # Get content
+" "                # Space character
+str_split          # Split by spaces
+array_len          # Count elements
+set:word_count     # Store word count
+
+"\nTotal word count: "  # Output prefix
+get:word_count     # Get word count
+str                # Convert number to string
+str_concat         # Concatenate
+dump               # Print word count
