@@ -14,6 +14,10 @@ Backstack is a stack-based programming language with a simple, readable syntax i
 
 Backstack programs can be both interpreted (via the `sim` command) or compiled to assembly. The language is designed to be simple to learn yet powerful enough for diverse programming tasks.
 
+## Documentation
+
+For comprehensive documentation on how to program in Backstack, please see [DOCS.md](DOCS.md).
+
 ## Examples
 
 ```
