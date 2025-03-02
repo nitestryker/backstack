@@ -17,6 +17,31 @@ OP_PUSH = iota(True)
 OP_PUSH_STR = iota()  # New operation for string literals
 OP_PLUS = iota()
 OP_MINUS = iota()
+
+# Operation types
+OP_PUSH = 0
+OP_PLUS = 1
+OP_MINUS = 2
+OP_MULTIPLY = 3
+OP_DIVIDE = 4
+OP_MODULO = 5
+OP_DUMP = 6
+OP_SET_VAR = 7
+OP_GET_VAR = 8
+OP_IF = 9
+OP_WHILE = 10
+OP_EQUALS = 11
+OP_NOT_EQUALS = 12
+OP_GREATER_THAN = 13
+OP_LESS_THAN = 14
+OP_AND = 15
+OP_OR = 16
+OP_NOT = 17
+OP_BITWISE_AND = 18
+OP_BITWISE_OR = 19
+OP_BITWISE_XOR = 20
+OP_BITWISE_NOT = 21
+
 OP_MULTI = iota()
 OP_DIVIDE = iota()
 OP_MOD = iota()
