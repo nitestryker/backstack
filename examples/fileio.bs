@@ -1,5 +1,5 @@
 
-# Felix File I/O Examples
+# Backstack File I/O Examples
 
 # Example 1: Write to a file
 "test.txt"        # Filename 
@@ -8,7 +8,7 @@ file_open         # Open file for writing
 set:file          # Store file handle
 
 get:file          # Get file handle
-"Hello, File I/O in Felix!\n"  # Content to write
+"Hello, File I/O in Backstack!\n"  # Content to write
 file_write        # Write to file
 
 get:file          # Get file handle

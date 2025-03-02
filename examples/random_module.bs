@@ -1,6 +1,6 @@
 
-# Felix Random Module
-# A Python-like random module implementation for Felix
+# Backstack Random Module
+# A Python-like random module implementation for Backstack
 
 # Initialize seed with a default value
 1234

@@ -1,5 +1,5 @@
 
-# Felix String Operations Example
+# Backstack String Operations Example
 
 # String literal
 "Hello, "    # Push first string to stack
@@ -27,7 +27,7 @@ dump              # Print result: 1 (true)
 
 # Combining string operations
 "The "       # First part
-"Felix "     # Second part
+"Backstack " # Second part
 str_concat   # Concatenate
 "language"   # Third part
 str_concat   # Concatenate again

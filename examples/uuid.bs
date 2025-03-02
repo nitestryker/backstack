@@ -1,4 +1,4 @@
-# Felix UUID Generator Example
+# Backstack UUID Generator Example
 
 # Function to generate a UUID-like string
 # Format: xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx (where x is hex digit, y is 8,9,a,b)
