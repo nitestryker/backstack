@@ -1,7 +1,7 @@
 [project]
 name = "backstack"
 version = "0.1.0"
-description = ""
-authors = ["nitestrkyer <nitestryker@gmail.com>"]
+description = "A stack-based programming language with simple, readable syntax"
+authors = ["Your Name <you@example.com>"]
 requires-python = ">=3.11"
 dependencies = []

@@ -1,7 +1,8 @@
+
 import sys
 import os
-import src.backstack as backstack
-from src.backstack import simulate_program, compile_program, read_program_from_args, usage, call_cmd, set_var, get_var
+import src.python.backstack as backstack
+from src.python.backstack import simulate_program, compile_program, read_program_from_args, usage, call_cmd, set_var, get_var
 
 def main():
     # Make sure the directory structure exists

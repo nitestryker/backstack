@@ -1,8 +1,8 @@
 
-# Felix Let Example
+# Backstack Let Example
 # Demonstrates using let-like variable binding functionality
 
-# Let example using Felix's existing set/get operations
+# Let example using Backstack's existing set/get operations
 # Format: value variable_name set
 10 
 "x" 
