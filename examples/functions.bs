@@ -1,4 +1,4 @@
-# Felix Functions Example
+# Backstack Functions Example
 
 # Simple function that adds two numbers
 fun:add

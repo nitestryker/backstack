@@ -1,7 +1,7 @@
 
-# Felix Random Number Generation Example
+# Backstack Random Number Generation Example
 
-# Since Felix doesn't have built-in random functions,
+# Since Backstack doesn't have built-in random functions,
 # we'll implement a simple Linear Congruential Generator (LCG)
 
 # Set up initial seed (can be any number)
