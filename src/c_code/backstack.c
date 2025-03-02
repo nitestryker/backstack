@@ -227,6 +227,11 @@ void parse_file(const char *filename) {
         
         if (*p == '\0') continue; // Skip empty lines after trimming
         
+        // Trim trailing whitespace
+        char *end = p + strlen(p) - 1;
+        while(end > p && isspace(*end)) end--;
+        *(end + 1) = '\0';
+        
         // Process tokens in the line
         if (*p == '"') {
             // String literal
