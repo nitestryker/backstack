@@ -1463,7 +1463,7 @@ def read_program_from_args(args):
     return program
 
 def usage():
-    print("Usage: python felix_extended.py <SUBCOMMAND> [ARGS]")
+    print("Usage: python main.py <SUBCOMMAND> [ARGS]")
     print("SUBCOMMANDS:")
     print("    sim    Simulate the program")
     print("    com    Compile the program")
