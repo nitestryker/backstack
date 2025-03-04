@@ -12,13 +12,29 @@ Backstack is a stack-based programming language with a simple, readable syntax i
 To run a Backstack program, use the `sim` (simulate) command:
 
 ```
-python main.py sim your_program.bs
+python src/python/main.py sim your_program.bs
 ```
 
-You can also compile a program to assembly using the `com` (compile) command:
+### Compiling a Backstack Program
+
+You can compile a Backstack program to a native executable using the `com` (compile) command:
 
 ```
-python main.py com your_program.bs
+python src/python/main.py com your_program.bs
+```
+
+This will:
+1. Parse your Backstack program
+2. Generate x86-64 assembly code
+3. Assemble the code using NASM
+4. Link the object file using GCC
+5. Create an executable (`output` on Linux/macOS or `output.exe` on Windows)
+
+You can then run the executable directly:
+
+```
+./output  # On Linux/macOS
+output.exe  # On Windows
 ```
 
 ### Hello World
