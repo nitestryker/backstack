@@ -1,0 +1,28 @@
+
+# This is a simple Backstack program example that demonstrates
+# how to use various language features
+
+# Basic arithmetic
+10 5 + 3 * dump
+
+# Variables
+20 !x       # Store 20 in variable x
+30 !y       # Store 30 in variable y
+x y + dump  # Print sum (50)
+
+# Strings
+"Hello, " "World!" strcat dump  # Concatenate and print strings
+
+# Conditionals
+10 5 > if   # If 10 > 5
+  "Ten is greater than five" dump
+else
+  "This won't print" dump
+endif
+
+# Loops
+5 !counter
+counter 0 > while
+  "Counter: " counter str strcat dump
+  counter 1 - !counter
+endwhile

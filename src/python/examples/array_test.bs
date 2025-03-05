@@ -1,0 +1,36 @@
+
+# Test file for array operations in ASM generation
+
+# Create a new array of size 5
+5 array_new set:arr  
+
+# Set values in the array
+get:arr 0 10 array_set  # arr[0] = 10
+get:arr 1 20 array_set  # arr[1] = 20
+get:arr 2 30 array_set  # arr[2] = 30
+get:arr 3 40 array_set  # arr[3] = 40
+get:arr 4 50 array_set  # arr[4] = 50
+
+# Get and print values
+"Array element at index 2: " dump
+get:arr 2 array_get dump  # Should print 30
+
+# Get array length
+"Array length: " dump
+get:arr array_len dump  # Should print 5
+
+# Sum all elements in the array
+0 set:sum
+0 set:i
+
+# Loop through the array
+get:arr array_len set:len
+1 while
+  get:i get:len < while
+    get:sum get:arr get:i array_get + set:sum
+    get:i 1 + set:i
+  wend
+wend
+
+"Sum of all elements: " dump
+get:sum dump  # Should print 150

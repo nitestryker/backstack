@@ -1,0 +1,35 @@
+
+# Test file for string operations in ASM generation
+
+# String concatenation
+"Hello, " "world!" str_concat set:greeting
+"Concatenated string: " dump
+get:greeting dump  # Should print "Hello, world!"
+
+# String length
+"String length: " dump
+get:greeting str_length dump  # Should print 13
+
+# String slice (substring)
+"Substring (7-12): " dump
+get:greeting 7 12 str_slice dump  # Should print "world"
+
+# String contains
+"Contains 'world': " dump
+get:greeting "world" str_contains dump  # Should print 1 (true)
+
+"Contains 'universe': " dump
+get:greeting "universe" str_contains dump  # Should print 0 (false)
+
+# Convert number to string
+"Number as string: " dump
+42 str dump  # Should print "42"
+
+# String split (returns array of substrings)
+"one,two,three,four" "," str_split set:parts
+
+"Number of parts: " dump
+get:parts array_len dump  # Should print 4
+
+"First part: " dump
+get:parts 0 array_get dump  # Should print "one"

@@ -1,0 +1,54 @@
+
+# Test file for ASM generation
+# This program shows various operations that our ASM generator supports
+
+# Basic arithmetic
+10 20 + dump     # Should output 30
+15 5 - dump      # Should output 10
+4 5 * dump       # Should output 20
+20 4 / dump      # Should output 5
+
+# Bitwise operations
+12 7 & dump      # Bitwise AND: should output 4
+12 7 | dump      # Bitwise OR: should output 15
+5 ~ dump         # Bitwise NOT: should output -6
+
+# Comparisons
+10 20 < dump     # Should output 1 (true)
+30 20 > dump     # Should output 1 (true)
+10 10 == dump    # Should output 1 (true)
+10 20 == dump    # Should output 0 (false)
+
+# If statement
+42 40 > if
+  "42 is greater than 40" dump
+else
+  "42 is not greater than 40" dump
+end
+
+# While loop
+10 !i            # Set variable i to 10
+i 0 > while      # While i > 0
+  i dump         # Print i
+  i 1 - !i       # Decrement i
+end
+# ASM generation test program
+# This program demonstrates various Backstack features
+
+# Basic arithmetic
+10 5 + dump     # 15
+20 8 - dump     # 12
+6 7 * dump      # 42
+100 4 / dump    # 25
+
+# Variables
+42 set:answer
+get:answer dump # 42
+
+# Bitwise operations
+12 7 & dump     # 4 (bitwise AND)
+12 7 | dump     # 15 (bitwise OR)
+5 ~ dump        # -6 (bitwise NOT)
+
+# String output
+"Assembly generation works!" dump
