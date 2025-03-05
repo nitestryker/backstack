@@ -1,0 +1,14 @@
+
+# Test file for function support in ASM generation
+
+# Define a simple function to calculate factorial
+fun:factorial
+  dup 1 <= if
+    drop 1 return
+  else
+    dup 1 - call:factorial * return
+  endif
+fun_end
+
+# Test the factorial function with input 5
+5 call:factorial dump  # Should output 120

@@ -1,0 +1,26 @@
+
+# Test file for file I/O operations in ASM generation
+
+# Write to a file
+"test.txt" "w" file_open set:file
+get:file "Hello, file I/O from Backstack!\nThis is a test file." file_write
+
+# Close the file
+get:file file_close
+
+# Read from the file
+"test.txt" "r" file_open set:file
+"File contents: " dump
+get:file file_read dump  # Should print the file contents
+get:file file_close
+
+# Append to the file
+"test.txt" "a" file_open set:file
+get:file "\nThis line was appended." file_append
+get:file file_close
+
+# Read the file again to verify append
+"test.txt" "r" file_open set:file
+"Updated file contents: " dump
+get:file file_read dump  # Should show the appended content
+get:file file_close

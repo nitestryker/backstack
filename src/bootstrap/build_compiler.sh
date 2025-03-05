@@ -1,3 +1,4 @@
+
 #!/bin/bash
 
 # Build script for Backstack compiler
@@ -5,7 +6,7 @@
 echo "Building Backstack compiler..."
 
 # Step 1: Build the C implementation
-gcc -Wall -g -o backstack.exe src/c_code/backstack.c
+gcc -Wall -g -o backstack.exe backstack.c
 
 if [ $? -ne 0 ]; then
     echo "Error: Failed to compile backstack.c"
