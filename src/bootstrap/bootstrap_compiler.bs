@@ -1,6 +1,6 @@
 
 # Bootstrap compiler for Backstack written in Backstack
-# This implements a simple self-hosting compiler for Backstack
+# This implements a self-hosting compiler for Backstack
 
 # Variables to track program state
 0 set:token_pos        # Current position in the token stream
@@ -9,6 +9,7 @@
 "" set:current_token   # Current token being processed
 0 array_new set:functions # Store function definitions
 0 set:label_counter    # Counter for generating unique labels
+0 array_new set:string_literals # Store string literals
 
 # Token types
 0 set:TOKEN_INTEGER
@@ -23,23 +24,59 @@
 101 set:OP_PUSH_STR
 102 set:OP_PLUS
 103 set:OP_MINUS
-104 set:OP_MULT
-105 set:OP_DIV
+104 set:OP_MULTI
+105 set:OP_DIVIDE
 106 set:OP_MOD
 107 set:OP_DUMP
-108 set:OP_SET_VAR
-109 set:OP_GET_VAR
-110 set:OP_EQ
-111 set:OP_NEQ
-112 set:OP_GT
-113 set:OP_LT
-114 set:OP_FUNC_DEF
-115 set:OP_FUNC_CALL
-116 set:OP_RETURN
+108 set:OP_SET
+109 set:OP_GET
+110 set:OP_EQUAL
+111 set:OP_NOT_EQUAL
+112 set:OP_GREATER
+113 set:OP_LESS
+114 set:OP_IF
+115 set:OP_ELSE
+116 set:OP_ENDIF
+117 set:OP_WHILE
+118 set:OP_REPEAT
+119 set:OP_END_WHILE
 120 set:OP_ARRAY_NEW
 121 set:OP_ARRAY_SET
 122 set:OP_ARRAY_GET
 123 set:OP_ARRAY_LEN
+124 set:OP_STR_CONCAT
+125 set:OP_STR_LENGTH
+126 set:OP_STR_SLICE
+127 set:OP_STR_CONTAINS
+128 set:OP_STR_SPLIT
+129 set:OP_STR
+130 set:OP_BIT_AND
+131 set:OP_BIT_OR
+132 set:OP_BIT_XOR
+133 set:OP_BIT_NOT
+134 set:OP_DUP
+135 set:OP_SWAP
+136 set:OP_DROP
+137 set:OP_OVER
+138 set:OP_ROT
+139 set:OP_FOR
+140 set:OP_NEXT
+141 set:OP_FUN_DEF
+142 set:OP_FUN_END
+143 set:OP_FUN_CALL
+144 set:OP_RETURN
+145 set:OP_FILE_OPEN
+146 set:OP_FILE_CLOSE
+147 set:OP_FILE_READ
+148 set:OP_FILE_WRITE
+149 set:OP_FILE_APPEND
+
+# Function to detect the platform
+fun:detect_platform
+  # In a real implementation, we would check the OS
+  # For now, we'll assume Windows
+  "windows" return
+fun_end
 
 # Function to generate a unique label
 fun:gen_label
@@ -48,6 +85,18 @@ fun:gen_label
   set:label_counter
   "label_" get:label_counter str_concat
   return
+fun_end
+
+# Function to add a string literal
+fun:add_string_literal
+  # Expect string on stack
+  set:string
+  
+  "str_" get:string_literals array_len str_concat set:label
+  get:string_literals get:label get:string 2 array_new array_append
+  set:string_literals
+  
+  get:label return
 fun_end
 
 # Function to check if a token is a number
@@ -145,37 +194,216 @@ fun:parse_token
           get:current_token "*" ==
           
           if
-            get:OP_MULT
+            get:OP_MULTI
             1 array_new
             get:program swap array_append
             set:program
           else
-            get:current_token "dump" ==
+            get:current_token "/" ==
             
             if
-              get:OP_DUMP
+              get:OP_DIVIDE
               1 array_new
               get:program swap array_append
               set:program
             else
-              # Check for variable operations
-              get:current_token "set:" str_contains
+              get:current_token "%" ==
               
               if
-                get:OP_SET_VAR
-                get:current_token 4 get:current_token str_length str_slice
-                2 array_new
+                get:OP_MOD
+                1 array_new
                 get:program swap array_append
                 set:program
               else
-                get:current_token "get:" str_contains
+                get:current_token "dump" ==
                 
                 if
-                  get:OP_GET_VAR
-                  get:current_token 4 get:current_token str_length str_slice
-                  2 array_new
+                  get:OP_DUMP
+                  1 array_new
                   get:program swap array_append
                   set:program
+                else
+                  # Check for variable operations
+                  get:current_token "set:" str_contains
+                  
+                  if
+                    get:OP_SET
+                    get:current_token 4 get:current_token str_length str_slice
+                    2 array_new
+                    get:program swap array_append
+                    set:program
+                  else
+                    get:current_token "get:" str_contains
+                    
+                    if
+                      get:OP_GET
+                      get:current_token 4 get:current_token str_length str_slice
+                      2 array_new
+                      get:program swap array_append
+                      set:program
+                    else
+                      # Check for comparison operators
+                      get:current_token "==" ==
+                      
+                      if
+                        get:OP_EQUAL
+                        1 array_new
+                        get:program swap array_append
+                        set:program
+                      else
+                        get:current_token "!=" ==
+                        
+                        if
+                          get:OP_NOT_EQUAL
+                          1 array_new
+                          get:program swap array_append
+                          set:program
+                        else
+                          get:current_token ">" ==
+                          
+                          if
+                            get:OP_GREATER
+                            1 array_new
+                            get:program swap array_append
+                            set:program
+                          else
+                            get:current_token "<" ==
+                            
+                            if
+                              get:OP_LESS
+                              1 array_new
+                              get:program swap array_append
+                              set:program
+                            else
+                              # Check for control flow
+                              get:current_token "if" ==
+                              
+                              if
+                                get:OP_IF
+                                1 array_new
+                                get:program swap array_append
+                                set:program
+                              else
+                                get:current_token "else" ==
+                                
+                                if
+                                  get:OP_ELSE
+                                  1 array_new
+                                  get:program swap array_append
+                                  set:program
+                                else
+                                  get:current_token "end_if" ==
+                                  
+                                  if
+                                    get:OP_ENDIF
+                                    1 array_new
+                                    get:program swap array_append
+                                    set:program
+                                  else
+                                    get:current_token "while" ==
+                                    
+                                    if
+                                      get:OP_WHILE
+                                      1 array_new
+                                      get:program swap array_append
+                                      set:program
+                                    else
+                                      get:current_token "end_while" ==
+                                      
+                                      if
+                                        get:OP_END_WHILE
+                                        1 array_new
+                                        get:program swap array_append
+                                        set:program
+                                      else
+                                        # Check for array operations
+                                        get:current_token "array_new" ==
+                                        
+                                        if
+                                          get:OP_ARRAY_NEW
+                                          1 array_new
+                                          get:program swap array_append
+                                          set:program
+                                        else
+                                          get:current_token "array_set" ==
+                                          
+                                          if
+                                            get:OP_ARRAY_SET
+                                            1 array_new
+                                            get:program swap array_append
+                                            set:program
+                                          else
+                                            get:current_token "array_get" ==
+                                            
+                                            if
+                                              get:OP_ARRAY_GET
+                                              1 array_new
+                                              get:program swap array_append
+                                              set:program
+                                            else
+                                              get:current_token "array_len" ==
+                                              
+                                              if
+                                                get:OP_ARRAY_LEN
+                                                1 array_new
+                                                get:program swap array_append
+                                                set:program
+                                              else
+                                                # Check for string operations
+                                                get:current_token "str_concat" ==
+                                                
+                                                if
+                                                  get:OP_STR_CONCAT
+                                                  1 array_new
+                                                  get:program swap array_append
+                                                  set:program
+                                                else
+                                                  get:current_token "str_length" ==
+                                                  
+                                                  if
+                                                    get:OP_STR_LENGTH
+                                                    1 array_new
+                                                    get:program swap array_append
+                                                    set:program
+                                                  else
+                                                    get:current_token "str_slice" ==
+                                                    
+                                                    if
+                                                      get:OP_STR_SLICE
+                                                      1 array_new
+                                                      get:program swap array_append
+                                                      set:program
+                                                    else
+                                                      get:current_token "str_contains" ==
+                                                      
+                                                      if
+                                                        get:OP_STR_CONTAINS
+                                                        1 array_new
+                                                        get:program swap array_append
+                                                        set:program
+                                                      else
+                                                        # More operations can be added
+                                                        # For now, we'll just show an error message
+                                                        "Unknown token: " get:current_token str_concat dump
+                                                      end_if
+                                                    end_if
+                                                  end_if
+                                                end_if
+                                              end_if
+                                            end_if
+                                          end_if
+                                        end_if
+                                      end_if
+                                    end_if
+                                  end_if
+                                end_if
+                              end_if
+                            end_if
+                          end_if
+                        end_if
+                      end_if
+                    end_if
+                  end_if
                 end_if
               end_if
             end_if
@@ -206,72 +434,369 @@ fun:parse
   return
 fun_end
 
-# Function to emit assembly code
-fun:emit
-  "Emitting code..." dump
+# Function to emit header
+fun:emit_header
+  "Emitting header..." dump
   
-  # In a real implementation, this would generate assembly code
-  # For this bootstrap version, we'll just print the operations
+  "; Backstack compiled program" dump
+  "bits 64" dump
+  "default rel" dump
+  "" dump
+  "; External functions" dump
+  "extern ExitProcess" dump
+  "extern printf" dump
+  "extern GetStdHandle" dump
+  "extern WriteConsoleA" dump
+  "extern malloc" dump
+  "extern free" dump
+  "extern strlen" dump
+  "extern strcpy" dump
+  "extern strcat" dump
+  "extern strstr" dump
+  "extern strdup" dump
+  "extern sprintf" dump
+  "extern fopen" dump
+  "extern fclose" dump
+  "extern fseek" dump
+  "extern ftell" dump
+  "extern fread" dump
+  "extern fputs" dump
+  "" dump
+  
+  return
+fun_end
+
+# Function to emit data section
+fun:emit_data_section
+  "Emitting data section..." dump
   
   "section .data" dump
   "    fmt_int db \"%lld\", 10, 0" dump
+  "    fmt_bool_true db \"true\", 10, 0" dump
+  "    fmt_bool_false db \"false\", 10, 0" dump
   "    fmt_str db \"%s\", 10, 0" dump
+  "    array_error_msg db \"Array index out of bounds\", 10, 0" dump
+  "    file_error_msg db \"File operation error\", 10, 0" dump
   "" dump
-  "section .text" dump
-  "    global main" dump
-  "    extern printf" dump
+  
+  # Output string literals
+  "    ; String literals" dump
+  0 set:i
+  while get:i get:string_literals array_len <
+    get:string_literals get:i array_get set:literal
+    get:literal 0 array_get set:label
+    get:literal 1 array_get set:string
+    "    " get:label " db \"" get:string "\", 0" str_concat str_concat str_concat dump
+    
+    get:i 1 + set:i
+  end_while
   "" dump
-  "main:" dump
+  
+  return
+fun_end
+
+# Function to emit helper functions
+fun:emit_helper_functions
+  "Emitting helper functions..." dump
+  
+  # Print integer
+  "print_int:" dump
   "    push rbp" dump
   "    mov rbp, rsp" dump
+  "    sub rsp, 32" dump
+  "    mov rdx, rdi" dump
+  "    lea rcx, [fmt_int]" dump
+  "    call printf" dump
+  "    add rsp, 32" dump
+  "    pop rbp" dump
+  "    ret" dump
+  "" dump
   
-  0 set:i
+  # Print boolean
+  "print_bool:" dump
+  "    push rbp" dump
+  "    mov rbp, rsp" dump
+  "    sub rsp, 32" dump
+  "    test rdi, rdi" dump
+  "    jz .false" dump
+  "    lea rcx, [fmt_bool_true]" dump
+  "    jmp .print" dump
+  ".false:" dump
+  "    lea rcx, [fmt_bool_false]" dump
+  ".print:" dump
+  "    call printf" dump
+  "    add rsp, 32" dump
+  "    pop rbp" dump
+  "    ret" dump
+  "" dump
   
-  while get:i get:program array_len <
-    get:program get:i array_get set:op
-    
-    get:op 0 array_get get:OP_PUSH ==
-    
+  # Print string
+  "print_string:" dump
+  "    push rbp" dump
+  "    mov rbp, rsp" dump
+  "    sub rsp, 32" dump
+  "    mov rdx, rdi" dump
+  "    lea rcx, [fmt_str]" dump
+  "    call printf" dump
+  "    add rsp, 32" dump
+  "    pop rbp" dump
+  "    ret" dump
+  "" dump
+  
+  # String concatenation
+  "strcat_func:" dump
+  "    push rbp" dump
+  "    mov rbp, rsp" dump
+  "    push rsi" dump
+  "    push rdi" dump
+  "    call strlen" dump
+  "    mov rbx, rax" dump
+  "    mov rdi, [rbp-16]" dump
+  "    call strlen" dump
+  "    add rax, rbx" dump
+  "    add rax, 1" dump
+  "    mov rdi, rax" dump
+  "    call malloc" dump
+  "    mov rdi, rax" dump
+  "    mov rsi, [rbp-8]" dump
+  "    call strcpy" dump
+  "    mov rdi, rax" dump
+  "    mov rsi, [rbp-16]" dump
+  "    call strcat" dump
+  "    pop rdi" dump
+  "    pop rsi" dump
+  "    pop rbp" dump
+  "    ret" dump
+  "" dump
+  
+  # String slice function
+  "substr_func:" dump
+  "    push rbp" dump
+  "    mov rbp, rsp" dump
+  "    sub rdx, rcx" dump
+  "    add rdx, 1" dump
+  "    push rsi" dump
+  "    push rcx" dump
+  "    push rdx" dump
+  "    mov rdi, rdx" dump
+  "    call malloc" dump
+  "    pop rdx" dump
+  "    pop rcx" dump
+  "    pop rsi" dump
+  "    add rsi, rcx" dump
+  "    mov rdi, rax" dump
+  "    mov rcx, rdx" dump
+  "    rep movsb" dump
+  "    mov byte [rdi], 0" dump
+  "    pop rbp" dump
+  "    ret" dump
+  "" dump
+  
+  # Array index error handler
+  "array_index_error:" dump
+  "    lea rcx, [array_error_msg]" dump
+  "    call printf" dump
+  "    xor rcx, rcx" dump
+  "    call ExitProcess" dump
+  "" dump
+  
+  # File error handler
+  "file_error:" dump
+  "    lea rcx, [file_error_msg]" dump
+  "    call printf" dump
+  "    xor rcx, rcx" dump
+  "    call ExitProcess" dump
+  "" dump
+  
+  return
+fun_end
+
+# Function to emit main function
+fun:emit_main_function
+  "section .text" dump
+  "    global main" dump
+  "" dump
+  
+  "main:" dump
+  "    ; Function prologue" dump
+  "    push rbp" dump
+  "    mov rbp, rsp" dump
+  "    sub rsp, 32" dump
+  "" dump
+  
+  return
+fun_end
+
+# Function to emit main function epilogue
+fun:emit_main_epilogue
+  "    ; Exit program" dump
+  "    xor rcx, rcx" dump
+  "    call ExitProcess" dump
+  
+  return
+fun_end
+
+# Function to compile OP_PUSH
+fun:compile_push
+  # Expect value on stack
+  set:value
+  "    ; Push " get:value str_concat dump
+  "    mov rax, " get:value str_concat dump
+  "    push rax" dump
+  
+  return
+fun_end
+
+# Function to compile OP_PUSH_STR
+fun:compile_push_str
+  # Expect string on stack
+  set:string
+  get:string call:add_string_literal set:str_label
+  "    ; Push string \"" get:string str_concat "\"" str_concat dump
+  "    lea rax, [" get:str_label str_concat "]" str_concat dump
+  "    push rax" dump
+  
+  return
+fun_end
+
+# Function to compile OP_PLUS
+fun:compile_plus
+  "    ; Add top two values" dump
+  "    pop rax" dump
+  "    pop rbx" dump
+  "    add rax, rbx" dump
+  "    push rax" dump
+  
+  return
+fun_end
+
+# Function to compile OP_MINUS
+fun:compile_minus
+  "    ; Subtract top from second" dump
+  "    pop rbx" dump
+  "    pop rax" dump
+  "    sub rax, rbx" dump
+  "    push rax" dump
+  
+  return
+fun_end
+
+# Function to compile OP_MULTI
+fun:compile_multi
+  "    ; Multiply top two values" dump
+  "    pop rax" dump
+  "    pop rbx" dump
+  "    imul rax, rbx" dump
+  "    push rax" dump
+  
+  return
+fun_end
+
+# Function to compile OP_DIVIDE
+fun:compile_divide
+  "    ; Divide second by top" dump
+  "    pop rbx" dump
+  "    pop rax" dump
+  "    cqo" dump
+  "    idiv rbx" dump
+  "    push rax" dump
+  
+  return
+fun_end
+
+# Function to compile OP_MOD
+fun:compile_mod
+  "    ; Modulo second by top" dump
+  "    pop rbx" dump
+  "    pop rax" dump
+  "    cqo" dump
+  "    idiv rbx" dump
+  "    push rdx" dump
+  
+  return
+fun_end
+
+# Function to compile OP_DUMP
+fun:compile_dump
+  "    ; Dump (print) top value" dump
+  "    pop rdi" dump
+  "    call print_int" dump
+  
+  return
+fun_end
+
+# Function to compile a single operation
+fun:compile_op
+  # Expect operation on stack
+  set:op
+  get:op 0 array_get set:op_type
+  
+  get:op_type get:OP_PUSH ==
+  if
+    get:op 1 array_get call:compile_push
+  else
+    get:op_type get:OP_PUSH_STR ==
     if
-      "    ; Push value" dump
-      "    mov rax, " get:op 1 array_get str_concat dump
-      "    push rax" dump
+      get:op 1 array_get call:compile_push_str
     else
-      get:op 0 array_get get:OP_PUSH_STR ==
-      
+      get:op_type get:OP_PLUS ==
       if
-        "    ; Push string" dump
-        "    lea rax, [rel str_0]" dump
-        "    push rax" dump
+        call:compile_plus
       else
-        get:op 0 array_get get:OP_PLUS ==
-        
+        get:op_type get:OP_MINUS ==
         if
-          "    ; Add" dump
-          "    pop rbx" dump
-          "    pop rax" dump
-          "    add rax, rbx" dump
-          "    push rax" dump
+          call:compile_minus
         else
-          get:op 0 array_get get:OP_DUMP ==
-          
+          get:op_type get:OP_MULTI ==
           if
-            "    ; Dump" dump
-            "    pop rdi" dump
-            "    lea rcx, [rel fmt_int]" dump
-            "    call printf" dump
+            call:compile_multi
+          else
+            get:op_type get:OP_DIVIDE ==
+            if
+              call:compile_divide
+            else
+              get:op_type get:OP_MOD ==
+              if
+                call:compile_mod
+              else
+                get:op_type get:OP_DUMP ==
+                if
+                  call:compile_dump
+                else
+                  # More operations can be added here
+                  "Unsupported operation: " get:op_type str_concat dump
+                end_if
+              end_if
+            end_if
           end_if
         end_if
       end_if
     end_if
+  end_if
+  
+  return
+fun_end
+
+# Function to emit assembly code
+fun:emit
+  "Emitting code..." dump
+  
+  # Generate assembly file structure
+  call:emit_header
+  call:emit_data_section
+  call:emit_helper_functions
+  call:emit_main_function
+  
+  # Compile each operation
+  0 set:i
+  while get:i get:program array_len <
+    get:program get:i array_get
+    call:compile_op
     
     get:i 1 + set:i
   end_while
   
-  "    ; Exit program" dump
-  "    xor rax, rax" dump
-  "    pop rbp" dump
-  "    ret" dump
+  call:emit_main_epilogue
   
   return
 fun_end
@@ -286,7 +811,7 @@ fun:main
   get:tokens call:parse set:program
   "Program: " get:program dump
   
-  get:program call:emit
+  call:emit
   
   "Compilation complete!" dump
   return
